@@ -465,6 +465,9 @@ public abstract class Shell implements Closeable {
         @NonNull
         public abstract Shell build();
 
+        @NonNull
+        public abstract Builder setSuCommand(@NonNull String suCommand);
+
         /**
          * Combine all of the options that have been set and build a new {@code Shell} instance
          * with the provided commands.

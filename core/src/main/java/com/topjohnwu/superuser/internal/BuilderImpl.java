@@ -40,7 +40,7 @@ public final class BuilderImpl extends Shell.Builder {
     private int flags = 0;
     private Shell.Initializer[] initializers;
     private String[] command;
-
+    private String suCommand = "su";
     boolean hasFlags(int mask) {
         return (flags & mask) == mask;
     }
@@ -56,6 +56,13 @@ public final class BuilderImpl extends Shell.Builder {
     @Override
     public Shell.Builder setTimeout(long t) {
         timeout = t;
+        return this;
+    }
+
+    @NonNull
+    @Override
+    public Shell.Builder setSuCommand(@NonNull String suCommand) {
+        this.suCommand = suCommand;
         return this;
     }
 
@@ -85,7 +92,7 @@ public final class BuilderImpl extends Shell.Builder {
         // Root mount master
         if (!hasFlags(FLAG_NON_ROOT_SHELL) && hasFlags(FLAG_MOUNT_MASTER)) {
             try {
-                shell = exec("su", "--mount-master");
+                shell = exec(suCommand, "--mount-master");
                 if (!shell.isRoot())
                     shell = null;
             } catch (NoShellException ignore) {}
@@ -94,7 +101,7 @@ public final class BuilderImpl extends Shell.Builder {
         // Normal root shell
         if (shell == null && !hasFlags(FLAG_NON_ROOT_SHELL)) {
             try {
-                shell = exec("su");
+                shell = exec(suCommand);
                 if (!shell.isRoot()) {
                     shell = null;
                 }
